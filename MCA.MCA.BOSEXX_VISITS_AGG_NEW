@@ -1,0 +1,514 @@
+OLDER VERSION - OLD EMAIL AGG 
+
+create or replace view MCA.MCA.BOSEXX_VISITS_AGG_NEW(
+	DEVICE_TYPE,
+	ORDERS,
+	REVENUE,
+	UNITS,
+	VISITS,
+	UNIQUE_VISITORS,
+	EMAIL_SIGNUPS,
+	VIEW_CART_PAGE,
+	VIEW_ADDRESS_PAGE,
+	VIEW_PAYMENT_PAGE,
+	VISIT_START_DATE_GMT,
+	WEB_COUNTRY,
+	DATE,
+	CHANNEL_CODE,
+	CAMPAIGN_CODE,
+	CHANNEL_CAMPAIGN_CODE,
+	SUB_REGION,
+	CHANNEL_NAME,
+	CAMPAIGN_NAME,
+	CHANNEL_CAMPAIGN,
+	CHANNEL_GROUP_AGG,
+	FOCUS_CHANNELS,
+	MEDIA,
+	BOUNCED,
+	HARD_BOUNCE,
+	SAW_CART_PAGE
+) as(
+  WITH table_1
+       AS (SELECT bounced,
+                  contact_us_entry,
+                  contact_us_submitted,
+                  device_type,
+                  email_subscription_entry,
+                  email_subscription_submitted,
+                  hard_bounce,
+                  landing_search_engine,
+                  post_campaign as last_touch_campaign,
+                  new_visid,
+                  null_search,
+                  num_orders,
+                  num_pages,
+                  purchase_delivery_completed,
+                  purchase_entry_completed,
+                  purchase_payment_completed,
+                  saw_cart_page,
+                  session_revenue,
+                  store_locator_dealer_selected,
+                  store_locator_entry,
+                  total_units,
+                  total_visits,
+                  total_visitor_id,
+                  view_cart_page,
+                  view_address_page,
+                  view_payment_page,
+                  view_checkout_page,
+                  visit_start_date_gmt,
+                  web_country,
+                  date_from_parts(year, month, day) AS DATE,
+                  Split_part(post_campaign, '_', 1) AS COUNTRY_CODE,
+                  Split_part(post_campaign, '_', 2) AS CHANNEL_CODE,
+                  Split_part(post_campaign, '_', 3) AS PRODUCT_CODE,
+                  LEFT(Split_part(post_campaign, '_', 4),2) AS CAMPAIGN_CODE,
+                  Split_part(post_campaign, '_', 5) AS DEVICE_CODE,
+                  Split_part(post_campaign, '_', 6) AS NETWORK_CODE,
+                  Split_part(post_campaign, '_', 7) AS FREE_TEXT,
+                  CASE
+                    WHEN web_country = 'united_states' THEN 'US'
+                    WHEN web_country = 'united_kingdom' THEN 'EU3'
+                    WHEN web_country = 'australia' THEN 'Australia'
+                    WHEN web_country = 'japan' THEN 'Japan'
+                    WHEN web_country = 'canada' THEN 'Canada'
+                    WHEN web_country = 'ireland' THEN 'Rest of EU'
+                    WHEN web_country = 'france' THEN 'EU3'
+                    WHEN web_country = 'netherlands' THEN 'Rest of EU'
+                    WHEN web_country = 'germany' THEN 'EU3'
+                    WHEN web_country = 'belgium' THEN 'Rest of EU'
+                    WHEN web_country = 'switzerland' THEN 'Rest of EU'
+                    WHEN web_country = 'italy' THEN 'Rest of EU'
+                    WHEN web_country = 'sweden' THEN 'Rest of EU'
+                    WHEN web_country = 'poland' THEN 'Rest of EU'
+                    WHEN web_country = 'norway' THEN 'Rest of EU'
+                    WHEN web_country = 'denmark' THEN 'Rest of EU'
+                    WHEN web_country = 'austria' THEN 'Rest of EU'
+                    WHEN web_country = 'luxembourg' THEN 'Rest of EU'
+                    WHEN web_country = 'finland' THEN 'Rest of EU'
+                    WHEN web_country = 'new_zealand' THEN 'New Zealand'
+                    WHEN web_country = 'argentina' THEN 'Notecom'
+                    WHEN web_country = 'chile' THEN 'Notecom'
+                    WHEN web_country = 'colombia' THEN 'Notecom'
+                    WHEN web_country = 'hong_kong' THEN 'Notecom'
+                    WHEN web_country = 'hungary' THEN 'Notecom'
+                    WHEN web_country = 'india' THEN 'Notecom'
+                    WHEN web_country = 'indonesia' THEN 'Notecom'
+                    WHEN web_country = 'malaysia' THEN 'Notecom'
+                    WHEN web_country = 'mexico' THEN 'Notecom'
+                    WHEN web_country = 'peru' THEN 'Notecom'
+                    WHEN web_country = 'philippines' THEN 'Notecom'
+                    WHEN web_country = 'singapore' THEN 'Notecom'
+                    WHEN web_country = 'spain' THEN 'Notecom'
+                    WHEN web_country = 'taiwan' THEN 'Notecom'
+                    WHEN web_country = 'thailand' THEN 'Notecom'
+                    WHEN web_country = 'united_arab_emirates' THEN 'Notecom'
+                    WHEN web_country = 'china' THEN 'Notecom'
+                    WHEN web_country = 'vietnam' THEN 'Notecom'
+                    WHEN web_country = 'bose_undefined' THEN 'Notecom'
+                    ELSE 'Other'
+                    END AS SUB_REGION,
+CASE
+WHEN POST_CAMPAIGN IS NULL THEN '0' ELSE
+CONCAT(date_from_parts(year, month, day),'-', post_campaign) END AS DATE_SOURCECODE,
+CASE 
+WHEN date_from_parts(year, month, day) BETWEEN '2022-06-17' AND '2022-07-13' THEN '00' ELSE 'XX' END AS IMPACTED_DATES,
+CASE
+WHEN POST_CAMPAIGN IS NULL THEN '0' ELSE
+CONCAT(IMPACTED_DATES,'-', post_campaign) END AS DATE_SOURCECODE_2
+           FROM  MCA.BOSEXX.MCA_VW_VISITS_SUMMARIZED_EST_CONVERSIONRATE),
+       table_2
+       AS (SELECT bounced,
+                  contact_us_entry,
+                  contact_us_submitted,
+                  device_type,
+                  email_subscription_entry,
+                  email_subscription_submitted,
+                  hard_bounce,
+                  landing_search_engine,
+                  last_touch_campaign,
+                  new_visid,
+                  null_search,
+                  num_orders,
+                  num_pages,
+                  purchase_delivery_completed,
+                  purchase_entry_completed,
+                  purchase_payment_completed,
+                  saw_cart_page,
+                  session_revenue,
+                  store_locator_dealer_selected,
+                  store_locator_entry,
+                  total_units,
+                  total_visitor_id,
+CASE 
+WHEN DATE_SOURCECODE_2 IN (
+'00-25_SA_QE_SE_00_CH_VM_201249', '00-25_SA_QE_SE_00_CH_VM_201252', '00-25_SA_QE_SE_00_CH_VM_201253', '00-25_SA_45_JI_00_CH_VU_200461', '00-25_SA_45_JI_00_CH_VU_200459',
+'00-25_SA_45_JI_00_CH_VU_200462', '00-25_SA_45_JI_00_CH_VU_200463', '00-25_SA_QE_SE_00_CH_VM_201251', '00-25_SA_QE_SE_00_CH_VM_201254', '00-25_SA_45_JI_00_CH_VU_200460',
+'00-25_SA_FL_SE_00_CH_VM_201223', '00-25_SA_45_SE_00_CH_VM_201244', '00-25_SA_FL_SE_00_CH_VM_201224', '00-25_SA_QE_SE_00_CH_VM_201250', '00-25_SA_FL_SE_00_CH_VM_201257',
+'00-25_SA_45_SE_00_CH_VM_201181', '00-25_SA_QE_SE_00_CH_VM_201192', '00-25_SA_QE_SE_00_CH_VM_201650', '00-25_SA_FL_SE_00_CH_VM_201260', '00-25_SA_45_JI_00_CH_VU_200455',
+'00-25_SA_45_JI_00_CH_VU_200458', '00-25_SA_45_JI_00_CH_VU_200457', '00-25_SA_45_SE_00_CH_VM_201183', '00-25_SA_45_SE_00_CH_VM_201649', '00-25_SA_45_JI_00_CH_VU_200454',
+'00-25_SA_QE_SE_00_CH_VM_201189', '00-25_SA_FL_SE_00_CH_VM_201651', '00-25_SA_45_JI_00_CH_VU_200456', '00-25_SA_FL_SE_00_CH_VM_201259', '00-25_SA_QE_SE_00_CH_VM_201191',
+'00-25_SA_45_SE_00_CH_VM_201182', '00-25_SA_45_SE_00_CH_VM_201247', '00-25_SA_45_SE_00_CH_VM_201248', '00-25_SA_FL_SE_00_CH_VM_201258', '00-25_SA_45_SE_00_CH_VM_201246',
+'00-25_SA_45_SE_00_CH_VM_201245', '00-25_SA_45_SE_00_CH_VM_201184', '00-25_SA_QE_SE_00_CH_VM_201190', '00-25_SA_FL_SE_00_CH_VM_201256', '00-25_SA_QE_SE_00_CH_VM_201653',
+'00-25_SA_45_SE_00_CH_VM_201243', '00-25_SA_FL_SE_00_CH_VM_201255', '00-25_SA_45_SE_00_CH_VM_201652', '00-25_SA_FL_SE_00_CH_VM_201654')
+ THEN total_visits/(3.45) ELSE total_visits END AS
+                  total_visits,
+                  view_cart_page,
+                  view_address_page,
+                  view_payment_page,
+                  view_checkout_page,
+                  visit_start_date_gmt,
+                  web_country,
+                  date,
+                  channel_code,
+                  product_code,
+                  campaign_code,
+                  free_text,
+                  sub_region,
+                  CASE
+                    WHEN UPPER(channel_code) = 'DM' THEN 'Direct Mail'
+                    WHEN UPPER(channel_code) = 'PT' THEN 'Print'
+                    WHEN UPPER(channel_code) = 'RA' THEN 'Radio'
+                    WHEN UPPER(channel_code) = 'TV' THEN 'TV'
+                    WHEN UPPER(channel_code) = 'PN' THEN 'Partnership'
+                    WHEN UPPER(channel_code) = 'PR' THEN 'PR'
+                    WHEN UPPER(channel_code) = 'BG' THEN 'Blog'
+                    WHEN UPPER(channel_code) = 'CE' THEN 'Email Campaign'
+                    WHEN UPPER(channel_code) = 'TE' THEN 'Email Triggered'
+                    WHEN UPPER(channel_code) = 'EE' THEN 'Email External'
+                    WHEN UPPER(channel_code) = 'SM' THEN 'Social Media'
+                    WHEN UPPER(channel_code) = 'SA' THEN 'Social Advertising'
+                    WHEN UPPER(channel_code) = 'AF' THEN 'Affiliates'
+                    WHEN UPPER(channel_code) = 'PS' THEN 'Paid Search'
+                    WHEN UPPER(channel_code) = 'DD' THEN 'Display'
+                    WHEN UPPER(channel_code) = 'PB' THEN 'Display Performance'
+                    WHEN UPPER(channel_code) = 'VA' THEN 'Video Ad'
+                    WHEN UPPER(channel_code) = 'PC' THEN 'Podcast'
+                    WHEN UPPER(channel_code) = 'DA' THEN 'Digital Audio Ads'
+                    WHEN UPPER(channel_code) = 'IA' THEN 'In-App'
+                    WHEN UPPER(channel_code) = 'PE' THEN 'Email Campaign - PDM'
+                    WHEN UPPER(channel_code) = 'NE' THEN 'Email Campaign - non PDM'
+                    WHEN UPPER(channel_code) = 'BA' THEN 'Bose App Messaging'
+                    WHEN UPPER(channel_code) = 'BM' THEN 'Bose Music App Messaging'
+                    WHEN UPPER(channel_code) = 'BC' THEN 'Bose Connect App Messaging'
+                    WHEN UPPER(channel_code) = 'BS' THEN 'Bose Sleep App Messaging'
+                    WHEN UPPER(channel_code) = 'BH' THEN 'Bose Hear App Messaging'
+                    WHEN UPPER(channel_code) = 'BV' THEN 'Bose Vision App Messaging'
+                    WHEN UPPER(channel_code) = 'HP' THEN 'Homepage Takeover'
+                    WHEN UPPER(channel_code) IS NULL THEN 'Natural/Direct Search'
+                    ELSE 'Unclassified'
+                  END AS CHANNEL_NAME,
+                  CASE
+                    WHEN UPPER(campaign_code) LIKE '%BO%' THEN 'Brand'
+                    WHEN UPPER(campaign_code) LIKE '%PL%' THEN 'PLA'
+                    WHEN UPPER(campaign_code) LIKE '%GE%' THEN 'Generic'
+                    WHEN UPPER(campaign_code) LIKE '%AO%' THEN 'Always on'
+                    WHEN UPPER(campaign_code) LIKE '%GM%' THEN 'Go to market'
+                    WHEN UPPER(campaign_code) LIKE '%LC%' THEN 'Lifecycle'
+                    WHEN UPPER(campaign_code) LIKE '%WC%' THEN 'Welcome'
+                    WHEN UPPER(campaign_code) LIKE '%SE%' THEN 'Seasonal'
+                    WHEN UPPER(campaign_code) LIKE '%AH%' THEN 'Ad hoc'
+                    WHEN UPPER(campaign_code) LIKE '%AP%' THEN 'After purchase'
+                    WHEN UPPER(campaign_code) LIKE '%SO%' THEN 'Store opening'
+                    WHEN UPPER(campaign_code) LIKE '%PR%' THEN 'Promotion'
+                    WHEN UPPER(campaign_code) LIKE '%CO%' THEN 'Contest'
+                    WHEN UPPER(campaign_code) LIKE '%RE%' THEN 'Retail'
+                    WHEN UPPER(campaign_code) LIKE '%DC%' THEN 'Data Capture'
+                    WHEN UPPER(campaign_code) LIKE '%PN%' THEN 'Partnership content'
+                    WHEN UPPER(campaign_code) LIKE '%ME%' THEN 'Mercedes F1'
+                    WHEN UPPER(campaign_code) LIKE '%RO%' THEN 'Rory'
+                    WHEN UPPER(campaign_code) LIKE '%NF%' THEN 'NFL'
+                    WHEN UPPER(campaign_code) LIKE '%CR%' THEN 'CCRM Retargeting'
+                    WHEN UPPER(campaign_code) LIKE '%CP%' THEN 'CCRM Prospecting'
+                    WHEN UPPER(campaign_code) LIKE '%CB%' THEN 'CCRM Buyer'
+                    WHEN UPPER(campaign_code) LIKE '%AB%' THEN 'Site Abandonment'
+                    WHEN UPPER(campaign_code) LIKE '%US%' THEN 'USSA'
+                    WHEN UPPER(campaign_code) LIKE '%AM%' THEN 'Amazon Music'
+                    WHEN UPPER(campaign_code) LIKE '%RB%' THEN 'Red Bull Media'
+                    WHEN UPPER(campaign_code) LIKE '%GA%' THEN 'Google Assistant'
+                    WHEN UPPER(campaign_code) LIKE '%SC%' THEN 'Social Commerce'
+                    WHEN UPPER(campaign_code) LIKE '%GO%' THEN 'Golf'
+                    WHEN UPPER(campaign_code) LIKE '%MU%' THEN 'Music'
+                    WHEN UPPER(campaign_code) LIKE '%TY%' THEN 'Thank you Card'
+                    WHEN UPPER(campaign_code) LIKE '%ET%' THEN 'End User Testing '
+                    WHEN UPPER(campaign_code) LIKE '%CM%' THEN 'Competitor'
+                    WHEN UPPER(campaign_code) LIKE '%ES%' THEN 'Events'
+                    WHEN UPPER(campaign_code) LIKE '%RF%' THEN 'Referral'
+                    WHEN UPPER(campaign_code) LIKE '%BC%' THEN 'Bose Church'
+                    WHEN UPPER(campaign_code) LIKE '%SW%' THEN 'Software'
+                    WHEN UPPER(campaign_code) LIKE '%PG%' THEN 'Prospecting'
+                    WHEN UPPER(campaign_code) LIKE '%WH%' THEN 'Work from home'
+                    WHEN UPPER(campaign_code) LIKE '%DS%' THEN 'Google Discovery'
+                    WHEN UPPER(campaign_code) LIKE '%NT%' THEN 'Microsoft Native'
+                    WHEN UPPER(campaign_code) LIKE '%LG%' THEN 'Lead Generation'
+                    WHEN UPPER(campaign_code) LIKE '%WT%' THEN 'Where To Buy'
+                    WHEN UPPER(campaign_code) LIKE '%OB%' THEN 'Onboarding'
+                    WHEN UPPER(campaign_code) LIKE '%SV%' THEN 'Survey'
+                    WHEN UPPER(campaign_code) LIKE '%NE%' THEN 'New Feature'
+                    WHEN UPPER(campaign_code) LIKE '%MB%' THEN 'My Bose'
+                    WHEN UPPER(campaign_code) LIKE '%PW%' THEN 'Product Review'
+                    WHEN UPPER(campaign_code) LIKE '%FE%' THEN 'Feature Education'
+                    WHEN UPPER(campaign_code) LIKE '%PS%' THEN 'Product Recommendations'
+                    WHEN UPPER(campaign_code) LIKE '%CS%' THEN 'Customer Support'
+                    WHEN UPPER(campaign_code) LIKE '%ED%' THEN 'Editorial'
+                    WHEN UPPER(campaign_code) LIKE '%AA%' THEN 'Amazon Alexa'
+                    WHEN UPPER(campaign_code) LIKE '%DP%' THEN 'Dynamic Product Ads'
+                    WHEN UPPER(campaign_code) LIKE '%SL%' THEN 'Bose Sleep App'                   
+                    WHEN UPPER(campaign_code) LIKE '%BK%' THEN 'NBA'
+                    WHEN UPPER(campaign_code) LIKE '%RR%' THEN 'Record Store Day'
+                    WHEN UPPER(campaign_code) LIKE '%M2%' THEN 'Tier 2 Music'
+                    WHEN UPPER(campaign_code) LIKE '%BH%' THEN 'Berrics & Harry Mack'
+                    WHEN UPPER(campaign_code) LIKE '%VP%' THEN 'VAMP'
+                    WHEN UPPER(campaign_code) LIKE '%TO%' THEN 'TikTok Organic'
+                    WHEN UPPER(campaign_code) LIKE '%JI%' THEN 'Jaden Ivey'
+                    WHEN UPPER(campaign_code) LIKE '%M3%' THEN 'Tier 3 Music'
+                    WHEN UPPER(campaign_code) LIKE '%CA%' THEN 'Charlie Puth Announcement'
+                    WHEN UPPER(campaign_code) LIKE '%PE%' THEN 'Prince Experience'
+                    WHEN UPPER(campaign_code) LIKE '%CC%' THEN 'SDCC'
+                    WHEN UPPER(campaign_code) LIKE '%TV%' THEN 'Tai Verdes'
+                    WHEN UPPER(campaign_code) LIKE '%WN%' THEN 'Warner Nashville'
+                    WHEN UPPER(campaign_code) LIKE '%TB%' THEN 'TikTok LPV Beta'
+                    WHEN UPPER(campaign_code) LIKE '%HD%' THEN 'House of the Dragon'
+                    WHEN UPPER(campaign_code) LIKE '%CS%' THEN 'Charlie Puth Social Boosting'
+                    WHEN UPPER(campaign_code) LIKE '%SM%' THEN 'Smalls Engage'
+                    WHEN UPPER(campaign_code) LIKE '%NI%' THEN 'Niki+ 88 Rising+Cloud Festival'
+                    ELSE ''
+                    END AS CAMPAIGN_NAME
+           FROM   table_1
+           WHERE DATE_SOURCECODE NOT IN
+('2022-07-01-25_SA_FL_SE_00_CH_200090','2022-07-02-25_SA_FL_SE_00_CH_200090','2022-07-03-25_SA_FL_SE_00_CH_200090','2022-07-04-25_SA_FL_SE_00_CH_200090','2022-07-05-25_SA_FL_SE_00_CH_200090',
+'2022-07-01-25_SA_FL_SE_00_CH_200101','2022-07-02-25_SA_FL_SE_00_CH_200101','2022-07-03-25_SA_FL_SE_00_CH_200101','2022-07-04-25_SA_FL_SE_00_CH_200101','2022-07-05-25_SA_FL_SE_00_CH_200101',
+'2022-07-01-25_SA_FL_SE_00_CH_200117','2022-07-02-25_SA_FL_SE_00_CH_200117','2022-07-03-25_SA_FL_SE_00_CH_200117','2022-07-04-25_SA_FL_SE_00_CH_200117','2022-07-05-25_SA_FL_SE_00_CH_200117',
+'2022-07-01-25_SA_FL_SE_00_CH_200122','2022-07-02-25_SA_FL_SE_00_CH_200122','2022-07-03-25_SA_FL_SE_00_CH_200122','2022-07-04-25_SA_FL_SE_00_CH_200122','2022-07-05-25_SA_FL_SE_00_CH_200122',
+'2022-07-01-25_SA_FL_SE_00_CH_VM_201085','2022-07-02-25_SA_FL_SE_00_CH_VM_201085','2022-07-03-25_SA_FL_SE_00_CH_VM_201085','2022-07-04-25_SA_FL_SE_00_CH_VM_201085','2022-07-05-25_SA_FL_SE_00_CH_VM_201085',
+'2022-07-01-25_SA_FL_SE_00_CH_VM_201086','2022-07-02-25_SA_FL_SE_00_CH_VM_201086','2022-07-03-25_SA_FL_SE_00_CH_VM_201086','2022-07-04-25_SA_FL_SE_00_CH_VM_201086','2022-07-05-25_SA_FL_SE_00_CH_VM_201086',
+'2022-07-01-25_SA_FL_SE_00_CH_VM_201087','2022-07-02-25_SA_FL_SE_00_CH_VM_201087','2022-07-03-25_SA_FL_SE_00_CH_VM_201087','2022-07-04-25_SA_FL_SE_00_CH_VM_201087','2022-07-05-25_SA_FL_SE_00_CH_VM_201087',
+'2022-07-01-25_SA_FL_SE_00_CH_VM_201091','2022-07-02-25_SA_FL_SE_00_CH_VM_201091','2022-07-03-25_SA_FL_SE_00_CH_VM_201091','2022-07-04-25_SA_FL_SE_00_CH_VM_201091','2022-07-05-25_SA_FL_SE_00_CH_VM_201091',
+'2022-07-01-25_SA_FL_SE_00_CH_VM_201092','2022-07-02-25_SA_FL_SE_00_CH_VM_201092','2022-07-03-25_SA_FL_SE_00_CH_VM_201092','2022-07-04-25_SA_FL_SE_00_CH_VM_201092','2022-07-05-25_SA_FL_SE_00_CH_VM_201092',
+'2022-07-01-25_SA_FL_SE_00_CH_VM_201093','2022-07-02-25_SA_FL_SE_00_CH_VM_201093','2022-07-03-25_SA_FL_SE_00_CH_VM_201093','2022-07-04-25_SA_FL_SE_00_CH_VM_201093','2022-07-05-25_SA_FL_SE_00_CH_VM_201093',
+'2022-07-01-25_SA_FL_SE_00_CH_VM_201097','2022-07-02-25_SA_FL_SE_00_CH_VM_201097','2022-07-03-25_SA_FL_SE_00_CH_VM_201097','2022-07-04-25_SA_FL_SE_00_CH_VM_201097','2022-07-05-25_SA_FL_SE_00_CH_VM_201097',
+'2022-07-01-25_SA_FL_SE_00_CH_VM_201098','2022-07-02-25_SA_FL_SE_00_CH_VM_201098','2022-07-03-25_SA_FL_SE_00_CH_VM_201098','2022-07-04-25_SA_FL_SE_00_CH_VM_201098','2022-07-05-25_SA_FL_SE_00_CH_VM_201098',
+'2022-07-01-25_SA_FL_SE_00_CH_VM_201099','2022-07-02-25_SA_FL_SE_00_CH_VM_201099','2022-07-03-25_SA_FL_SE_00_CH_VM_201099','2022-07-04-25_SA_FL_SE_00_CH_VM_201099','2022-07-05-25_SA_FL_SE_00_CH_VM_201099',
+'2022-07-01-25_SA_FL_SE_00_CH_VM_201103','2022-07-02-25_SA_FL_SE_00_CH_VM_201103','2022-07-03-25_SA_FL_SE_00_CH_VM_201103','2022-07-04-25_SA_FL_SE_00_CH_VM_201103','2022-07-05-25_SA_FL_SE_00_CH_VM_201103',
+'2022-07-01-25_SA_FL_SE_00_CH_VM_201104','2022-07-02-25_SA_FL_SE_00_CH_VM_201104','2022-07-03-25_SA_FL_SE_00_CH_VM_201104','2022-07-04-25_SA_FL_SE_00_CH_VM_201104','2022-07-05-25_SA_FL_SE_00_CH_VM_201104',
+'2022-07-01-25_SA_FL_SE_00_CH_VM_201105','2022-07-02-25_SA_FL_SE_00_CH_VM_201105','2022-07-03-25_SA_FL_SE_00_CH_VM_201105','2022-07-04-25_SA_FL_SE_00_CH_VM_201105','2022-07-05-25_SA_FL_SE_00_CH_VM_201105',
+'2022-07-01-25_SA_FL_SE_00_CH_VM_201223','2022-07-02-25_SA_FL_SE_00_CH_VM_201223','2022-07-03-25_SA_FL_SE_00_CH_VM_201223','2022-07-04-25_SA_FL_SE_00_CH_VM_201223','2022-07-05-25_SA_FL_SE_00_CH_VM_201223',
+'2022-07-01-25_SA_FL_SE_00_CH_VM_201224','2022-07-02-25_SA_FL_SE_00_CH_VM_201224','2022-07-03-25_SA_FL_SE_00_CH_VM_201224','2022-07-04-25_SA_FL_SE_00_CH_VM_201224','2022-07-05-25_SA_FL_SE_00_CH_VM_201224'
+)
+          ),
+       table_3
+       AS (SELECT bounced,
+                  contact_us_entry,
+                  contact_us_submitted,
+                  device_type,
+                  email_subscription_entry,
+                  email_subscription_submitted,
+                  hard_bounce,
+                  landing_search_engine,
+                  last_touch_campaign,
+                  new_visid,
+                  null_search,
+                  num_orders,
+                  num_pages,
+                  purchase_delivery_completed,
+                  purchase_entry_completed,
+                  purchase_payment_completed,
+                  saw_cart_page,
+                  session_revenue,
+                  store_locator_dealer_selected,
+                  store_locator_entry,
+                  total_units,
+                  total_visitor_id,
+                  total_visits,
+                  view_cart_page,
+                  view_address_page,
+                  view_payment_page,
+                  view_checkout_page,
+                  visit_start_date_gmt,
+                  web_country,
+                  date,
+                  channel_code,
+                  product_code,
+                  campaign_code,
+                  free_text,
+                  sub_region,
+                  channel_name,
+                  campaign_name,
+                  CASE 
+                  WHEN CAMPAIGN_NAME= '' THEN CHANNEL_NAME
+                  WHEN CHANNEL_NAME = 'Natural/Direct Search' THEN CHANNEL_NAME
+                  WHEN CHANNEL_NAME = 'Unclassified' THEN CHANNEL_NAME
+                  WHEN CHANNEL_CODE='SA' AND FREE_TEXT LIKE '%PMConversion%' THEN 'Social Advertising-PMConversion'
+                  WHEN CHANNEL_CODE='SA' AND FREE_TEXT LIKE '%PMConsideration%' THEN 'Social Advertising-PMConsideration' //temporary
+                  WHEN CHANNEL_CODE='SA' AND CAMPAIGN_CODE='AO' AND DATE < '2021-08-13' THEN 'Social Advertising-Always on (PM)'
+                  WHEN CHANNEL_CODE='SA' AND CAMPAIGN_CODE='SC' AND DATE < '2021-09-25' THEN 'Social Advertising-Social Commerce (PM)'
+                  WHEN CHANNEL_CODE='SA' AND CAMPAIGN_CODE NOT IN ('DP','AO','SC') AND FREE_TEXT NOT LIKE '%PMConversion%' AND FREE_TEXT NOT LIKE '%PMConsideration%' THEN 'Social Advertising-Social Prospecting (BM)'
+                  ELSE concat(channel_name, '-', campaign_name) END AS CHANNEL_CAMPAIGN,
+           CONCAT(UPPER(CHANNEL_CODE), '-', UPPER(CAMPAIGN_CODE)) AS CHANNEL_CAMPAIGN_CODE,
+           CASE
+           WHEN UPPER(CHANNEL_CODE) LIKE '%DM%' THEN 'Other' //Direct Mail
+           WHEN UPPER(CHANNEL_CODE) LIKE '%PT%' THEN 'Other' //Print
+           WHEN UPPER(CHANNEL_CODE) LIKE '%RA%' THEN 'Other' //Radio
+           WHEN UPPER(CHANNEL_CODE) LIKE '%TV%' THEN 'Other' //TV
+           WHEN UPPER(CHANNEL_CODE) LIKE '%PN%' THEN 'Other' //Partnership
+           WHEN UPPER(CHANNEL_CODE) LIKE '%PR%' THEN 'Other' //PR
+           WHEN UPPER(CHANNEL_CODE) LIKE '%BG%' THEN 'Other' //Blog
+           WHEN UPPER(CHANNEL_CODE) LIKE '%CE%' THEN 'Email' //Email Campaign
+           WHEN UPPER(CHANNEL_CODE) LIKE '%TE%' THEN 'Email' //Email Triggered
+           WHEN UPPER(CHANNEL_CODE) LIKE '%EE%' THEN 'Email' //Email External
+           WHEN UPPER(CHANNEL_CODE) LIKE '%SM%' THEN 'Social' //Social Media
+           WHEN UPPER(CHANNEL_CODE) LIKE '%SA%' THEN 'Social' //Social Advertising
+           WHEN UPPER(CHANNEL_CODE) LIKE '%AF%' THEN 'Affiliates' //Affiliates
+           WHEN UPPER(CHANNEL_CODE) LIKE '%PS%' THEN 'Paid Search' //Paid Search
+           WHEN UPPER(CHANNEL_CODE) LIKE '%DD%' THEN 'Digital Media' //Display
+           WHEN UPPER(CHANNEL_CODE) LIKE '%PB%' THEN 'Digital Media' //Display Performance
+           WHEN UPPER(CHANNEL_CODE) LIKE '%VA%' THEN 'Digital Media' //Video ad
+           WHEN UPPER(CHANNEL_CODE) LIKE '%PC%' THEN 'Other' //Podcast
+           WHEN UPPER(CHANNEL_CODE) LIKE '%DA%' THEN 'Other' //Digital Audio Ads
+           WHEN UPPER(CHANNEL_CODE) LIKE '%IA%' THEN 'Other' //In-App
+           WHEN UPPER(CHANNEL_CODE) LIKE '%PE%' THEN 'Email' //Email Campaign - PDM
+           WHEN UPPER(CHANNEL_CODE) LIKE '%NE%' THEN 'Email' //Email Campaign - non PDM
+           WHEN UPPER(CHANNEL_CODE) LIKE '%BA%' THEN 'Other' //Bose App Messaging
+           WHEN UPPER(CHANNEL_CODE) LIKE '%BM%' THEN 'Other' //Bose Music App Messaging
+           WHEN UPPER(CHANNEL_CODE) LIKE '%BC%' THEN 'Other' //Bose Connect App Messaging
+           WHEN UPPER(CHANNEL_CODE) LIKE '%BS%' THEN 'Other' //Bose Sleep App Messaging
+           WHEN UPPER(CHANNEL_CODE) LIKE '%BH%' THEN 'Other' //Bose Hear App Messaging
+           WHEN UPPER(CHANNEL_CODE) LIKE '%BV%' THEN 'Other' //Bose Vision App Messaging
+           WHEN UPPER(channel_code) IS NULL THEN 'Natural/Direct Search'
+           ELSE 'Other'
+           END AS CHANNEL_GROUP_AGG
+           FROM   table_2),
+       table_4
+       AS (SELECT bounced,
+                  contact_us_entry,
+                  contact_us_submitted,
+                  device_type,
+                  email_subscription_entry,
+                  email_subscription_submitted,
+                  hard_bounce,
+                  landing_search_engine,
+                  last_touch_campaign,
+                  new_visid,
+                  null_search,
+                  num_orders,
+                  num_pages,
+                  purchase_delivery_completed,
+                  purchase_entry_completed,
+                  purchase_payment_completed,
+                  saw_cart_page,
+                  session_revenue,
+                  store_locator_dealer_selected,
+                  store_locator_entry,
+                  total_units,
+                  total_visitor_id,
+                  total_visits,
+                  view_cart_page,
+                  view_address_page,
+                  view_payment_page,
+                  view_checkout_page,
+                  visit_start_date_gmt,
+                  web_country,
+                  date,
+                  channel_code,
+                  product_code,
+                  campaign_code,
+                  channel_campaign_code,
+                  --free_text,
+                  sub_region,
+                  channel_name,
+                  campaign_name,
+                  channel_campaign,
+                  channel_group_agg,
+           CASE 
+           WHEN CHANNEL_NAME LIKE '%Affiliates%' THEN 'Affiliates'
+           WHEN CHANNEL_CAMPAIGN LIKE '%Email Campaign - non PDM%' THEN 'Email - non PDM'
+           WHEN CHANNEL_CAMPAIGN LIKE '%Email Campaign - PDM%' THEN 'Email - PDM'
+           WHEN CHANNEL_CAMPAIGN LIKE '%Email%' THEN 'Email - Other'
+           WHEN CHANNEL_CAMPAIGN = 'Paid Search-Brand' THEN 'Paid Search - Brand'
+           WHEN CHANNEL_CAMPAIGN = 'Paid Search-PLA' THEN 'Paid Search - Shopping'
+           WHEN CHANNEL_CAMPAIGN = 'Paid Search-Google Discovery' THEN 'Paid Search - Native'
+           WHEN CHANNEL_CAMPAIGN = 'Paid Search-Microsoft Native' THEN 'Paid Search - Native'
+           WHEN CHANNEL_CAMPAIGN LIKE '%Paid Search%' THEN 'Paid Search - Generic'
+           WHEN CHANNEL_CAMPAIGN = 'Display Performance-Prospecting' THEN 'Display Prospecting'
+           WHEN CHANNEL_CAMPAIGN = 'Display Performance-Always on' THEN 'Display Retargeting'
+           WHEN CHANNEL_CAMPAIGN LIKE '%Display%' THEN 'Digital Media'
+           WHEN CHANNEL_CAMPAIGN LIKE '%Video%' THEN 'Digital Media'
+           WHEN CHANNEL_CAMPAIGN='Social Advertising-Dynamic Product Ads' THEN 'Social Retargeting'
+           WHEN CHANNEL_CAMPAIGN='Social Advertising-Always on (PM)' THEN 'Social Retargeting'
+           WHEN CHANNEL_CAMPAIGN='Social Advertising-Social Commerce (PM)' THEN 'Social Retargeting'
+           WHEN CHANNEL_CAMPAIGN='Social Advertising-PMConversion' THEN 'Social Prospecting (PM)'
+           WHEN CHANNEL_CAMPAIGN='Social Advertising-PMConsideration' THEN 'Social Prospecting (PM)' 
+           WHEN CHANNEL_CAMPAIGN='Social Advertising-Social Prospecting (BM)' THEN 'Social Prospecting (BM)' 
+           WHEN CHANNEL_CAMPAIGN LIKE '%Social%' THEN 'Social'
+           WHEN CHANNEL_CAMPAIGN='Natural/Direct Search' THEN 'Natural/Direct'
+           ELSE 'Other'
+           END AS FOCUS_CHANNELS,
+           CASE
+           WHEN CHANNEL_NAME LIKE '%Affiliates%' THEN 'Performance media'
+           WHEN CHANNEL_NAME LIKE '%Email%' THEN 'Performance media'
+           WHEN CHANNEL_NAME LIKE '%Paid Search%' THEN 'Performance media'
+           WHEN CHANNEL_CAMPAIGN='Display Performance-Prospecting' THEN 'Performance media'
+           WHEN CHANNEL_CAMPAIGN='Display Performance-Always on' THEN 'Performance media'
+           WHEN CHANNEL_CAMPAIGN='Social Advertising-Dynamic Product Ads' THEN 'Performance media'
+           WHEN CHANNEL_CAMPAIGN='Social Advertising-Always on (PM)' THEN 'Performance media'
+           WHEN CHANNEL_CAMPAIGN='Social Advertising-Social Commerce (PM)' THEN 'Performance media'
+           WHEN CHANNEL_CAMPAIGN='Social Advertising-PMConversion' THEN 'Performance media'
+           WHEN CHANNEL_CAMPAIGN='Social Advertising-PMConsideration' THEN 'Performance media' 
+           WHEN CHANNEL_NAME='Natural/Direct Search' THEN 'Natural/Direct'
+           ELSE 'Brand media'
+           END AS MEDIA
+           FROM   table_3)
+  SELECT device_type,
+         SUM(num_orders)        AS ORDERS,
+         SUM(session_revenue)   AS REVENUE,
+         SUM(total_units)       AS UNITS,
+         CASE 
+         WHEN DATE='2022-04-30' AND CHANNEL_NAME = 'Natural/Direct Search' AND WEB_COUNTRY='united_states' THEN SUM(TOTAL_VISITS)*0.45
+         WHEN DATE='2022-05-01' AND CHANNEL_NAME = 'Natural/Direct Search' AND WEB_COUNTRY='united_states' THEN SUM(TOTAL_VISITS)*0.32
+         WHEN DATE='2022-05-02' AND CHANNEL_NAME = 'Natural/Direct Search' AND WEB_COUNTRY='united_states' THEN SUM(TOTAL_VISITS)*0.86
+         WHEN DATE='2022-04-30' AND CHANNEL_NAME = 'Natural/Direct Search' AND WEB_COUNTRY='germany' THEN SUM(TOTAL_VISITS)*0.70
+         WHEN DATE='2022-05-01' AND CHANNEL_NAME = 'Natural/Direct Search' AND WEB_COUNTRY='germany' THEN SUM(TOTAL_VISITS)*0.28
+         WHEN DATE='2022-05-02' AND CHANNEL_NAME = 'Natural/Direct Search' AND WEB_COUNTRY='germany' THEN SUM(TOTAL_VISITS)*0.72
+         ELSE SUM(total_visits) END AS VISITS,
+         SUM(total_visitor_id)  AS UNIQUE_VISITORS,
+         SUM(email_subscription_submitted)  AS EMAIL_SIGNUPS,
+         SUM(VIEW_CART_PAGE)    AS VIEW_CART_PAGE,
+         SUM(VIEW_ADDRESS_PAGE) AS VIEW_ADDRESS_PAGE,
+         SUM(VIEW_PAYMENT_PAGE) AS VIEW_PAYMENT_PAGE,
+         visit_start_date_gmt,
+         web_country,
+         date,
+         channel_code,
+         campaign_code,
+         channel_campaign_code,
+         --free_text,
+         sub_region,
+         channel_name,
+         campaign_name,
+         channel_campaign,
+         channel_group_agg,
+         focus_channels,
+         media,
+         bounced,
+         hard_bounce,
+         saw_cart_page
+   FROM   table_4
+   GROUP  BY device_type,
+             visit_start_date_gmt,
+             web_country,
+             date,
+             channel_code,
+             product_code,
+             campaign_code,
+             --free_text,
+             sub_region,
+             channel_name,
+             campaign_name,
+             channel_campaign,
+             channel_campaign_code,
+             channel_group_agg,
+             focus_channels,
+             media,
+             bounced,
+             hard_bounce,
+             saw_cart_page);
